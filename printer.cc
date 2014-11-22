@@ -4,7 +4,9 @@
 using namespace std;
 
 Printer::Printer(unsigned int numStudents, unsigned int numVendingMachines, unsigned int numCouriers) :
-    numStudents(numStudents), numVendingMachines(numVendingMachines), numCouriers(numCouriers) {
+    numStudents(numStudents),
+    numVendingMachines(numVendingMachines),
+    numCouriers(numCouriers) {
     startVendingMachineIndex = (unsigned int)Student + numStudents;
     startCourierIndex = startVendingMachineIndex + numVendingMachines;
     totalSize = startCourierIndex + numCouriers;
