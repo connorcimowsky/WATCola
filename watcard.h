@@ -16,4 +16,4 @@ class WATCard {
     unsigned int getBalance();
 };
 
-#endif WATCARD_H
+#endif
