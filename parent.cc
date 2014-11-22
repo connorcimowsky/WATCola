@@ -22,8 +22,8 @@ void Parent::main() {
         } _Else {
             yield(parentalDelay);
 
-            unsigned int id = generator(numStudents);
-            unsigned int amount = generator(AMOUNT_LOWER_BOUND, AMOUNT_UPPER_BOUND);
+            int id = generator(numStudents);
+            int amount = generator(AMOUNT_LOWER_BOUND, AMOUNT_UPPER_BOUND);
 
             printer.print(Printer::Parent, Deposit, id, amount);
             bank.deposit(id, amount);
