@@ -26,12 +26,6 @@ _Task WATCardOffice {
     Job *requestWork();
 };
 
-_Task Parent {
-    void main();
-  public:
-    Parent( Printer &prt, Bank &bank, unsigned int numStudents, unsigned int parentalDelay );
-};
-
 _Task VendingMachine {
     void main();
   public:
