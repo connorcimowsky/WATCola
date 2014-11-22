@@ -6,12 +6,12 @@ _Task NameServer;
 
 _Task BottlingPlant {
     void main();
-  public:
+public:
     _Event Shutdown {};                    // shutdown plant
-    BottlingPlant( Printer &prt, NameServer &nameServer, unsigned int numVendingMachines,
+    BottlingPlant(Printer &prt, NameServer &nameServer, unsigned int numVendingMachines,
                  unsigned int maxShippedPerFlavour, unsigned int maxStockPerFlavour,
-                 unsigned int timeBetweenShipments );
-    void getShipment( unsigned int cargo[] );
+                 unsigned int timeBetweenShipments);
+    void getShipment(unsigned int cargo[]);
 };
 
 #endif
