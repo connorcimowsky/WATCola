@@ -5,6 +5,11 @@ Bank::Bank(unsigned int numStudents) :
     withdrawals(new uCondition[numStudents]) {
 }
 
+Bank::~Bank() {
+    delete[] balances;
+    delete[] withdrawals;
+}
+
 void Bank::deposit(unsigned int id, unsigned int amount) {
     balances[id] += amount;
     withdrawals[id].signal();
