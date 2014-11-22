@@ -45,13 +45,6 @@ _Task BottlingPlant {
     void getShipment( unsigned int cargo[] );
 };
 
-_Task Truck {
-    void main();
-  public:
-    Truck( Printer &prt, NameServer &nameServer, BottlingPlant &plant,
-           unsigned int numVendingMachines, unsigned int maxStockPerFlavour );
-};
-
 _Monitor / _Cormonitor Printer {
   public:
     enum Kind { Parent, WATCardOffice, NameServer, Truck, BottlingPlant, Student, Vending, Courier };
