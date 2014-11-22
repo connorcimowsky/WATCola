@@ -1,10 +1,3 @@
-_Task Student {
-    void main();
-  public:
-    Student( Printer &prt, NameServer &nameServer, WATCardOffice &cardOffice, unsigned int id,
-             unsigned int maxPurchases );
-};
-
 class WATCard {
     WATCard( const WATCard & );            // prevent copying
     WATCard &operator=( const WATCard & );
