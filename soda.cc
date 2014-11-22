@@ -26,15 +26,6 @@ _Task WATCardOffice {
     Job *requestWork();
 };
 
-_Task NameServer {
-    void main();
-  public:
-    NameServer( Printer &prt, unsigned int numVendingMachines, unsigned int numStudents );
-    void VMregister( VendingMachine *vendingmachine );
-    VendingMachine *getMachine( unsigned int id );
-    VendingMachine **getMachineList();
-};
-
 _Task BottlingPlant {
     void main();
   public:
