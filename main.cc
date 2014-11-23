@@ -26,9 +26,8 @@ bool convert(int &val, char *buffer) {        // convert C string to integer
 
 void uMain::main() {
     int seed = getpid();
+    const char *configFile = "soda.config";
     ConfigParms config;
-
-    processConfigFile("soda.config", config);
 
     switch (argc) {
         case 3:
@@ -37,7 +36,7 @@ void uMain::main() {
                 exit(EXIT_FAILURE);
             }
         case 2:
-            processConfigFile(argv[1], config);
+            configFile = argv[1];
         case 1:
             break;
         default:
@@ -45,6 +44,7 @@ void uMain::main() {
             exit(EXIT_FAILURE);
     }
 
+    processConfigFile(configFile, config);
     Printer printer(config.numStudents, config.numVendingMachines, config.numCouriers);
     Bank bank(config.numStudents);
     Parent *parent = new Parent(printer, bank, config.numStudents, config.parentalDelay);
