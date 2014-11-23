@@ -27,10 +27,12 @@ void VendingMachine::buy(Flavours flavour, WATCard &card) {
     processing.wait();
 
     if(raiseFunds) {
+        uRendezvousAcceptor();
         _Throw Funds();
     }
 
     if (raiseStock) {
+        uRendezvousAcceptor();
         _Throw Stock();
     }
 }
