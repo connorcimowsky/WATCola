@@ -70,5 +70,7 @@ void Student::main() {
         bottles -= 1;
     }
 
+    delete card();
+
     printer.print(Printer::Student, id, (char)Finished);
 }

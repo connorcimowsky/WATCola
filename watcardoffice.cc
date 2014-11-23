@@ -19,8 +19,11 @@ WATCardOffice::WATCardOffice(Printer &prt, Bank &bank, unsigned int numCouriers)
 }
 
 WATCardOffice::~WATCardOffice() {
-    for (unsigned int i = 0; i < numCouriers; i++) {
+    while(!workAvailable.empty()) {
         workAvailable.signalBlock();
+    }
+
+    for (unsigned int i = 0; i < numCouriers; i++) {
         delete couriers[i];
     }
 
@@ -89,7 +92,7 @@ void WATCardOffice::Courier::main() {
     while(true) {
         Job *work = office.requestWork();
 
-        _When(work == NULL) _Accept(~Courier) {
+        if(work == NULL) {
             break;
         }
 
@@ -115,4 +118,6 @@ void WATCardOffice::Courier::main() {
     }
 
     printer.print(Printer::Courier, id, (char)Finish);
+    _Accept(~Courier) {
+    }
 }
