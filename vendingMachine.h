@@ -30,7 +30,7 @@ private:
     unsigned int id;
     unsigned int sodaCost;
     unsigned int maxStockPerFlavour;
-    unsigned int stock[(unsigned int)NumberOfFlavours];
+    unsigned int stock[NumberOfFlavours];
 
     bool isRestocking;
     bool raiseFunds;

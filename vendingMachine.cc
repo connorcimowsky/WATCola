@@ -13,6 +13,10 @@ VendingMachine::VendingMachine(Printer &prt, NameServer &nameServer, unsigned in
     isRestocking(false),
     raiseFunds(false),
     raiseStock(false) {
+
+    for (unsigned int i = 0; i < NumberOfFlavours; i++) {
+        stock[i] = 0;
+    }
 }
 
 void VendingMachine::buy(Flavours flavour, WATCard &card) {
@@ -59,13 +63,13 @@ void VendingMachine::main() {
             if (raiseFunds) {
                 raiseFunds = false;
                 raiseStock = false;
-                _Throw Funds();
+                throw Funds();
             }
 
             if(raiseStock) {
                 raiseFunds = false;
                 raiseStock = false;
-                _Throw Stock();
+                throw Stock();
             }
         }
     }
