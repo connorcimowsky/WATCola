@@ -11,7 +11,8 @@ public:
         BluesBlackCherry = 0,
         ClassicalCreamSoda = 1,
         RockRootBeer = 2,
-        JazzLime = 3
+        JazzLime = 3,
+        NumberOfFlavours = 4
     };
 
 private:
@@ -29,7 +30,7 @@ private:
     unsigned int id;
     unsigned int sodaCost;
     unsigned int maxStockPerFlavour;
-    unsigned int stock[4];
+    unsigned int stock[(unsigned int)NumberOfFlavours];
 
     bool isRestocking;
     bool raiseFunds;

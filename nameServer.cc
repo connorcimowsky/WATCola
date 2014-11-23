@@ -10,6 +10,7 @@ NameServer::NameServer(Printer &prt, unsigned int numVendingMachines, unsigned i
     machineList = new VendingMachine*[numVendingMachines];
     machineAssignment = new unsigned int[numStudents];
 }
+
 NameServer::~NameServer() {
     delete[] machineList;
     delete[] machineAssignment;
@@ -17,6 +18,7 @@ NameServer::~NameServer() {
 
 void NameServer::VMregister(VendingMachine *vendingmachine) {
     machineList[numRegistered] = vendingmachine;
+    numRegistered++;
     printer.print(Printer::NameServer, (char)Register, vendingmachine->getId());
 }
 
@@ -38,7 +40,6 @@ void NameServer::main() {
             _Accept(~NameServer) {
                 break outer;
             } or _Accept(VMregister) {
-                numRegistered++;
             }
         }
 
@@ -50,8 +51,7 @@ void NameServer::main() {
         while(true) {
             _Accept(~NameServer) {
                 break outer;
-            } or _Accept(getMachine) {
-            } or _Accept(getMachineList) {
+            } or _Accept(getMachine, getMachineList) {
             }
         }
     }

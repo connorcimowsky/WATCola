@@ -16,21 +16,14 @@ VendingMachine::VendingMachine(Printer &prt, NameServer &nameServer, unsigned in
 }
 
 void VendingMachine::buy(Flavours flavour, WATCard &card) {
-    currentCard = &card;
-    currentFlavour = flavour;
+    raiseFunds = (card.getBalance() < sodaCost);
+    raiseStock = (stock[(unsigned int)flavour] == 0);
 
-    processing.wait();
 
-    if(raiseFunds) {
-        raiseFunds = false;
-        _Resume Funds();
-    }
-
-    processing.wait();
-
-    if(raiseStock) {
-        raiseStock = false;
-        _Resume Stock();
+    if(!raiseFunds && !raiseStock) {
+        printer.print(Printer::Vending, id, (char)Buy, (unsigned int)flavour, stock[(unsigned int)flavour]);
+        card.withdraw(sodaCost);
+        stock[(unsigned int)flavour]--;
     }
 }
 
@@ -63,22 +56,17 @@ void VendingMachine::main() {
         } or _Accept(inventory) {
         } or _When(isRestocking) _Accept(restocked) {
         } or _When(!isRestocking) _Accept(buy) {
-            if (stock[currentFlavour] == 0) {
-                raiseStock = true;
+            if (raiseFunds) {
+                raiseFunds = false;
+                raiseStock = false;
+                _Throw Funds();
             }
 
-            processing.signalBlock();
-
-            if(currentCard->getBalance() < sodaCost) {
-                raiseFunds = true;
+            if(raiseStock) {
+                raiseFunds = false;
+                raiseStock = false;
+                _Throw Stock();
             }
-
-            processing.signalBlock();
-
-            currentCard->withdraw(sodaCost);
-            stock[currentFlavour]--;
-
-            printer.print(Printer::Vending, id, (char)Buy, currentFlavour, stock[currentFlavour]);
         }
     }
 
