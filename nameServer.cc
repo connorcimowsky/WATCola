@@ -18,7 +18,6 @@ NameServer::~NameServer() {
 
 void NameServer::VMregister(VendingMachine *vendingmachine) {
     machineList[numRegistered] = vendingmachine;
-    numRegistered++;
     printer.print(Printer::NameServer, (char)Register, vendingmachine->getId());
 }
 
@@ -40,6 +39,7 @@ void NameServer::main() {
             _Accept(~NameServer) {
                 break outer;
             } or _Accept(VMregister) {
+                numRegistered++;
             }
         }
 

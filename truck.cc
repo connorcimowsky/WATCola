@@ -2,6 +2,7 @@
 #include "printer.h"
 #include "nameServer.h"
 #include "bottlingPlant.h"
+#include "MPRNG.h"
 
 Truck::Truck(Printer &prt, NameServer &nameServer, BottlingPlant &plant,
            unsigned int numVendingMachines, unsigned int maxStockPerFlavour) :
@@ -18,7 +19,7 @@ void Truck::main() {
     VendingMachine** vendingMachines = nameServer.getMachineList();
 
     while(true) {
-        yield(10);
+        yield(generator(1, 10));
         try {
             plant.getShipment(cargo);
         } catch (BottlingPlant::Shutdown &s) {
