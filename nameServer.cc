@@ -24,7 +24,7 @@ void NameServer::VMregister(VendingMachine *vendingmachine) {
 VendingMachine* NameServer::getMachine(unsigned int id) {
     VendingMachine *ret = machineList[machineAssignment[id]];
     printer.print(Printer::NameServer, (char)New, id, ret->getId());
-    machineAssignment[id] = (machineAssignment[id] < numVendingMachines) ? machineAssignment[id] + 1 : 0;
+    machineAssignment[id] = (machineAssignment[id] < numVendingMachines - 1) ? machineAssignment[id] + 1 : 0;
     return ret;
 }
 
@@ -33,7 +33,8 @@ VendingMachine** NameServer::getMachineList() {
 }
 
 void NameServer::main() {
-    printer.print(Printer::NameServer, (char)Start);
+    printer.print(Printer::NameServer, Starting);
+
     outer: while(true) {
         while(numRegistered < numVendingMachines) {
             _Accept(~NameServer) {

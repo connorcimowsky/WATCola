@@ -57,14 +57,15 @@ unsigned int VendingMachine::getId() {
 }
 
 void VendingMachine::main() {
-    printer.print(Printer::Vending, (char)Start, id, sodaCost);
+    printer.print(Printer::Vending, id, (char)Start, sodaCost);
     nameServer.VMregister(this);
 
     while(true) {
         _Accept(~VendingMachine) {
             break;
         } or _When(isRestocking) _Accept(restocked) {
-        } or _When(!isRestocking) _Accept(buy, inventory) {
+        } or _When(!isRestocking) _Accept(inventory) {
+        } or _When(!isRestocking) _Accept(buy) {
             raiseStock = (stock[currentFlavour] == 0);
             raiseFunds = (currentCard->getBalance() < sodaCost);
 

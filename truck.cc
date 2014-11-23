@@ -3,6 +3,9 @@
 #include "nameServer.h"
 #include "bottlingPlant.h"
 #include "MPRNG.h"
+#include <iostream>
+
+using namespace std;
 
 Truck::Truck(Printer &prt, NameServer &nameServer, BottlingPlant &plant,
            unsigned int numVendingMachines, unsigned int maxStockPerFlavour) :
@@ -41,25 +44,23 @@ void Truck::main() {
 
             unsigned int notReplenished = 0;
             for (unsigned int j = 0; j < VendingMachine::NumberOfFlavours; j++) {
-                unsigned int toStock = maxStockPerFlavour - inventory[i];
+                unsigned int toStock = maxStockPerFlavour - inventory[j];
 
-                if(cargo[i] < toStock) {
-                    notReplenished += toStock - cargo[i];
-                    toStock = cargo[i];
+                if(cargo[j] < toStock) {
+                    notReplenished += toStock - cargo[j];
+                    toStock = cargo[j];
                 }
 
-                cargo[i] -= toStock;
-                inventory[i] += toStock;
+                cargo[j] -= toStock;
+                inventory[j] += toStock;
             }
-
-            if (notReplenished > 0) {
-                printer.print(Printer::Truck, (char)Unsuccessful, machine->getId(), notReplenished);
-            } else {
-                printer.print(Printer::Truck, (char)Delivered, machine->getId(), bottlesLeft());
-            }
+            printer.print(Printer::Truck, (char)Unsuccessful, machine->getId(), notReplenished);
+            printer.print(Printer::Truck, (char)Delivered, machine->getId(), bottlesLeft());
 
             machine->restocked();
-            machineForRestock++;
+
+            machineForRestock = (machineForRestock < numVendingMachines - 1) ? machineForRestock + 1 : 0;
+            // osacquire(cout) << endl << "Restock" << machineForRestock << endl;
         }
     }
 

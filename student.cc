@@ -18,7 +18,7 @@ void Student::main() {
     unsigned int bottles = generator(1, maxPurchases);
     unsigned int flavour = generator(0, FLAVOUR_UPPER_BOUND);
 
-    printer.print(Printer::Student, id, Starting, flavour, bottles);
+    printer.print(Printer::Student, id, (char)Starting, flavour, bottles);
 
     WATCard::FWATCard card = cardOffice.create(id, WATCARD_BALANCE);
 

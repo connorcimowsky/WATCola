@@ -11,6 +11,8 @@ Printer::Printer(unsigned int numStudents, unsigned int numVendingMachines, unsi
     startCourierIndex = startVendingMachineIndex + numVendingMachines;
     totalSize = startCourierIndex + numCouriers;
 
+    cout << Student << ' ' << startVendingMachineIndex << ' ' << startCourierIndex << ' ' << totalSize << endl;
+
     states = new char[totalSize];
     firstValues = new int[totalSize];
     secondValues = new int[totalSize];
@@ -88,8 +90,8 @@ void Printer::print(Kind kind, unsigned int lid, char state, int value1, int val
 }
 
 void Printer::outputHeaders(unsigned int startIndex, unsigned int endIndex, const char* prefix) {
-    for (unsigned int i = startIndex; i < endIndex; i++) {
-        cout << prefix << i << '\t';
+    for (unsigned int i = startIndex, j = 0; i < endIndex; i++, j++) {
+        cout << prefix << j << '\t';
     }
 }
 
@@ -99,12 +101,15 @@ unsigned int Printer::getIndexFromKind(Kind kind, unsigned int lid) {
     switch(kind) {
         case Student:
             index += (unsigned int)Student;
+            // cout << "S" << index << endl;
             return index;
         case Vending:
             index += startVendingMachineIndex;
+            // cout << "V" << lid << "," << index << endl;
             return index;
         case Courier:
             index += startCourierIndex;
+            // cout << "C" << lid << "," << index << endl;
             return index;
         default:
             return index;
