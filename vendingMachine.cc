@@ -12,7 +12,8 @@ VendingMachine::VendingMachine(Printer &prt, NameServer &nameServer, unsigned in
     maxStockPerFlavour(maxStockPerFlavour),
     isRestocking(false),
     raiseFunds(false),
-    raiseStock(false) {
+    raiseStock(false),
+    currentCard(NULL) {
 
     for (unsigned int i = 0; i < NumberOfFlavours; i++) {
         stock[i] = 0;
@@ -20,14 +21,17 @@ VendingMachine::VendingMachine(Printer &prt, NameServer &nameServer, unsigned in
 }
 
 void VendingMachine::buy(Flavours flavour, WATCard &card) {
-    raiseFunds = (card.getBalance() < sodaCost);
-    raiseStock = (stock[(unsigned int)flavour] == 0);
+    currentCard = &card;
+    currentFlavour = flavour;
 
+    processing.wait();
 
-    if(!raiseFunds && !raiseStock) {
-        printer.print(Printer::Vending, id, (char)Buy, (unsigned int)flavour, stock[(unsigned int)flavour]);
-        card.withdraw(sodaCost);
-        stock[(unsigned int)flavour]--;
+    if(raiseFunds) {
+        _Throw Funds();
+    }
+
+    if (raiseStock) {
+        _Throw Stock();
     }
 }
 
@@ -57,20 +61,24 @@ void VendingMachine::main() {
     while(true) {
         _Accept(~VendingMachine) {
             break;
-        } or _Accept(inventory) {
         } or _When(isRestocking) _Accept(restocked) {
-        } or _When(!isRestocking) _Accept(buy) {
-            if (raiseFunds) {
+        } or _When(!isRestocking) _Accept(buy, inventory) {
+            raiseStock = (stock[currentFlavour] == 0);
+            raiseFunds = (currentCard->getBalance() < sodaCost);
+
+            processing.signalBlock();
+
+            if(!raiseFunds && !raiseStock) {
+                currentCard->withdraw(sodaCost);
+                stock[currentFlavour]--;
+
+                printer.print(Printer::Vending, id, (char)Buy, (unsigned int)currentFlavour, stock[currentFlavour]);
+            } else {
                 raiseFunds = false;
                 raiseStock = false;
-                throw Funds();
             }
 
-            if(raiseStock) {
-                raiseFunds = false;
-                raiseStock = false;
-                throw Stock();
-            }
+            currentCard = NULL;
         }
     }
 
