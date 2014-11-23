@@ -23,7 +23,7 @@ void BottlingPlant::getShipment(unsigned int cargo[]) {
         _Throw Shutdown();
     }
 
-    for (unsigned int i = 0; i < (unsigned int)VendingMachine::NumberOfFlavours; i++) {
+    for (unsigned int i = 0; i < VendingMachine::NumberOfFlavours; i++) {
         cargo[i] = productionRun[i];
     }
 
@@ -33,6 +33,7 @@ void BottlingPlant::getShipment(unsigned int cargo[]) {
 void BottlingPlant::main() {
     printer.print(Printer::BottlingPlant, (char)Start);
     Truck truck(printer, nameServer, *this, numVendingMachines, maxStockPerFlavour);
+
     while(true) {
         yield(timeBetweenShipments);
 
@@ -52,4 +53,7 @@ void BottlingPlant::main() {
     }
 
     printer.print(Printer::BottlingPlant, (char)Finish);
+
+    _Accept(getShipment) {
+    }
 }

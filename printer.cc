@@ -11,8 +11,6 @@ Printer::Printer(unsigned int numStudents, unsigned int numVendingMachines, unsi
     startCourierIndex = startVendingMachineIndex + numVendingMachines;
     totalSize = startCourierIndex + numCouriers;
 
-    cout << Student << ' ' << startVendingMachineIndex << ' ' << startCourierIndex << ' ' << totalSize << endl;
-
     states = new char[totalSize];
     firstValues = new int[totalSize];
     secondValues = new int[totalSize];

@@ -4,14 +4,13 @@ Bank::Bank(unsigned int numStudents) :
     numStudents(numStudents),
     balances(new unsigned int[numStudents]()),
     withdrawals(new uCondition*[numStudents]) {
-
-    for(unsigned int i = 0; i < numStudents; i++) {
+    for (unsigned int i = 0; i < numStudents; i++) {
         withdrawals[i] = new uCondition();
     }
 }
 
 Bank::~Bank() {
-    for(unsigned int i = 0; i < numStudents; i++) {
+    for (unsigned int i = 0; i < numStudents; i++) {
         delete withdrawals[i];
     }
 
