@@ -99,6 +99,8 @@ void WATCardOffice::Courier::main() {
         if(generator(5) == 0) {
             delete work->card;
             work->result.exception(new Lost());
+        } else {
+            work->result.delivery(work->card);
         }
 
         delete work;
