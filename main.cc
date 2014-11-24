@@ -44,7 +44,9 @@ void uMain::main() {
             exit(EXIT_FAILURE);
     }
 
+    generator.seed(seed);
     processConfigFile(configFile, config);
+
     Printer printer(config.numStudents, config.numVendingMachines, config.numCouriers);
     Bank bank(config.numStudents);
     Parent *parent = new Parent(printer, bank, config.numStudents, config.parentalDelay);
