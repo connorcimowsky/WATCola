@@ -63,10 +63,18 @@ void Printer::print(Kind kind, char state, int value1, int value2) {
 void Printer::print(Kind kind, unsigned int lid, char state) {
     unsigned int index = getIndexFromKind(kind, lid);
 
-    flushBufferAndSetState(index, state);
-
     if (state == 'F') {
-        flushBuffer(states[index]);
+        for (unsigned int i = 0; i < totalSize; i++) {
+            if(states[i] != ' ') {
+                flushBuffer(' ');
+                break;
+            }
+        }
+
+        states[index] = 'F';
+        flushBuffer(state);
+    } else {
+        flushBufferAndSetState(index, state);
     }
 }
 
@@ -119,7 +127,7 @@ unsigned int Printer::getIndexFromKind(Kind kind, unsigned int lid) {
  */
 void Printer::flushBufferAndSetState(unsigned int id, char state) {
     if (states[id] != ' ') {                                // Flush the buffer if we are overwriting a state
-        flushBuffer(states[id]);
+        flushBuffer(state);
     }
 
     states[id] = state;
