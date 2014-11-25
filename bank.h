@@ -11,7 +11,7 @@ public:
 private:
     unsigned int numStudents;
     unsigned int *balances;
-    uCondition **withdrawals;
+    uCondition *withdrawals;
 };
 
 #endif
