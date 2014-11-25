@@ -1,4 +1,3 @@
-#include "MPRNG.h"
 #include "config.h"
 #include "printer.h"
 #include "bank.h"
@@ -8,21 +7,27 @@
 #include "vendingMachine.h"
 #include "bottlingPlant.h"
 #include "student.h"
+#include "MPRNG.h"
+
 #include <iostream>
 #include <sstream>
-#include <string>
-
-using namespace std;
 
 MPRNG generator;
 
-bool convert(int &val, char *buffer) {        // convert C string to integer
-    stringstream ss(buffer);         // connect stream and buffer
-    ss >> dec >> val;                   // convert integer from buffer
-    return !ss.fail() &&               // conversion successful ?
-    // characters after conversion all blank ?
-    string(buffer).find_first_not_of(" ", ss.tellg()) == string::npos;
-} // convert
+using namespace std;
+
+bool convert (int &val, char *buffer) {
+    std::stringstream ss(buffer);
+    ss >> dec >> val;
+    return ! ss.fail() && string(buffer).find_first_not_of(" ", ss.tellg()) == string::npos;
+}
+
+void usage(char *argv[]) {
+    cerr << "Usage: " << argv[0]
+         << " [ config-file [ random-seed (> 0) ] ]"
+         << endl;
+    exit(EXIT_FAILURE);
+}
 
 void uMain::main() {
     int seed = getpid();
@@ -31,17 +36,15 @@ void uMain::main() {
 
     switch (argc) {
         case 3:
-            if(!convert(seed, argv[2])) {
-                cerr << "Usage: ./soda_64 [ config-file [ random-seed (> 0) ] ]" << endl;
-                exit(EXIT_FAILURE);
+            if(!convert(seed, argv[2]) || seed <= 0) {
+                usage(argv);
             }
         case 2:
             configFile = argv[1];
         case 1:
             break;
         default:
-            cerr << "Usage: ./soda_64 [ config-file [ random-seed (> 0) ] ]" << endl;
-            exit(EXIT_FAILURE);
+            usage(argv);
     }
 
     generator.seed(seed);
@@ -49,38 +52,30 @@ void uMain::main() {
 
     Printer printer(config.numStudents, config.numVendingMachines, config.numCouriers);
     Bank bank(config.numStudents);
-    Parent *parent = new Parent(printer, bank, config.numStudents, config.parentalDelay);
-    WATCardOffice *office = new WATCardOffice(printer, bank, config.numCouriers);
-    NameServer *nameServer = new NameServer(printer, config.numVendingMachines, config.numStudents);
+    Parent parent(printer, bank, config.numStudents, config.parentalDelay);
+    WATCardOffice office(printer, bank, config.numCouriers);
+    NameServer nameServer(printer, config.numVendingMachines, config.numStudents);
 
-    VendingMachine **vendingMachines = new VendingMachine*[config.numVendingMachines];
+    VendingMachine *vendingMachines[config.numVendingMachines];
     for (unsigned int i = 0; i < config.numVendingMachines; i++) {
-        vendingMachines[i] = new VendingMachine(printer, *nameServer, i, config.sodaCost, config.maxStockPerFlavour);
+        vendingMachines[i] = new VendingMachine(printer, nameServer, i, config.sodaCost, config.maxStockPerFlavour);
     }
 
-    BottlingPlant *plant = new BottlingPlant(printer, *nameServer, config.numVendingMachines, config.maxShippedPerFlavour,
-                                             config.maxStockPerFlavour, config.timeBetweenShipments);
+    BottlingPlant *plant = new BottlingPlant(printer, nameServer, config.numVendingMachines,
+                                   config.maxShippedPerFlavour, config.maxStockPerFlavour, config.timeBetweenShipments);
 
-    Student **students = new Student*[config.numStudents];
+    Student *students[config.numStudents];
     for (unsigned int i = 0; i < config.numStudents; i++) {
-        students[i] = new Student(printer, *nameServer, *office, i, config.maxPurchases);
+        students[i] = new Student(printer, nameServer, office, i, config.maxPurchases);
     }
 
     for (unsigned int i = 0; i < config.numStudents; i++) {
         delete students[i];
     }
 
-    delete[] students;
-
     delete plant;
 
     for (unsigned int i = 0; i < config.numVendingMachines; i++) {
         delete vendingMachines[i];
     }
-
-    delete[] vendingMachines;
-
-    delete nameServer;
-    delete office;
-    delete parent;
 }
