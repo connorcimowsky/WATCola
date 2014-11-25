@@ -8,14 +8,15 @@ _Monitor Printer;
 _Monitor Bank;
 
 _Task WATCardOffice {
-    enum States {
-        Start = 'S',
-        Work = 'W',
-        Create = 'C',
-        Transfer = 'T',
-        Finish = 'F'
-    };
+public:
+    _Event Lost {};                        // lost WATCard
+    WATCardOffice(Printer &prt, Bank &bank, unsigned int numCouriers);
+    ~WATCardOffice();
+    WATCard::FWATCard create(unsigned int sid, unsigned int amount);
+    WATCard::FWATCard transfer(unsigned int sid, unsigned int amount, WATCard *card);
+    Job *requestWork();
 
+private:
     struct Job {                           // marshalled arguments and return future
         unsigned int sid;
         unsigned int amount;
@@ -25,6 +26,10 @@ _Task WATCardOffice {
     };
 
     _Task Courier {
+    public:
+        Courier(Printer &prt, Bank &bank, WATCardOffice &office, unsigned int id);
+
+    private:
         enum States {
             Start = 'S',
             StartTransfer = 't',
@@ -38,9 +43,15 @@ _Task WATCardOffice {
         unsigned int id;
 
         void main();
-    public:
-        Courier(Printer &prt, Bank &bank, WATCardOffice &office, unsigned int id);
     };                 // communicates with bank
+
+    enum States {
+        Start = 'S',
+        Work = 'W',
+        Create = 'C',
+        Transfer = 'T',
+        Finish = 'F'
+    };
 
     Printer &printer;
     Bank &bank;
@@ -51,13 +62,6 @@ _Task WATCardOffice {
     uCondition workAvailable;
 
     void main();
-public:
-    _Event Lost {};                        // lost WATCard
-    WATCardOffice(Printer &prt, Bank &bank, unsigned int numCouriers);
-    ~WATCardOffice();
-    WATCard::FWATCard create(unsigned int sid, unsigned int amount);
-    WATCard::FWATCard transfer(unsigned int sid, unsigned int amount, WATCard *card);
-    Job *requestWork();
 };
 
 #endif

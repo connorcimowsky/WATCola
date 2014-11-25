@@ -19,14 +19,6 @@ WATCardOffice::WATCardOffice(Printer &prt, Bank &bank, unsigned int numCouriers)
 }
 
 WATCardOffice::~WATCardOffice() {
-    while(!workAvailable.empty()) {
-        workAvailable.signalBlock();
-    }
-
-    for (unsigned int i = 0; i < numCouriers; i++) {
-        delete couriers[i];
-    }
-
     delete[] couriers;
 }
 
@@ -34,7 +26,6 @@ WATCard::FWATCard WATCardOffice::create(unsigned int sid, unsigned int amount) {
     Job *job = new Job(sid, amount, NULL);
     jobQueue.push(job);
     printer.print(Printer::WATCardOffice, (char)Create, sid, amount);
-    workAvailable.signal();
     return job->result;
 }
 
@@ -42,14 +33,13 @@ WATCard::FWATCard WATCardOffice::transfer(unsigned int sid, unsigned int amount,
     Job *job = new Job(sid, amount, card);
     jobQueue.push(job);
     printer.print(Printer::WATCardOffice, (char)Transfer, sid, amount);
-    workAvailable.signal();
     return job->result;
 }
 
 WATCardOffice::Job* WATCardOffice::requestWork() {
     if(jobQueue.empty()) {
         workAvailable.wait();
-        if(jobQueue.empty()) {
+        if(jobQueue.empty()) {  //If we are woken up and have no jobs return NULL to indicate we are done
             return NULL;
         }
     }
@@ -64,12 +54,23 @@ WATCardOffice::Job* WATCardOffice::requestWork() {
 
 void WATCardOffice::main() {
     printer.print(Printer::WATCardOffice, (char)Start);
+
     while(true) {
         _Accept(~WATCardOffice) {
-            break;
-        } or _Accept(create, transfer, requestWork) {
-        }
+            while(!workAvailable.empty()) {     // Force all couriers to finish requesting work
+                workAvailable.signalBlock();
+            }
+
+            for (unsigned int i = 0; i < numCouriers; i++) {    //Force them to finish
+                delete couriers[i];
+            }
+
+            break;                              // Finish
+        } or _Accept(create, transfer) {
+            workAvailable.signal();
+        } or _Accept(requestWork);
     }
+
     printer.print(Printer::WATCardOffice, (char)Finish);
 }
 
@@ -92,11 +93,11 @@ void WATCardOffice::Courier::main() {
     while(true) {
         Job *work = office.requestWork();
 
-        if(work == NULL) {
+        if(work == NULL) {  // if we get no work we are done
             break;
         }
 
-        if(work->card == NULL) {
+        if(work->card == NULL) {            // create a watcard
             work->card = new WATCard();
         }
 
@@ -107,7 +108,7 @@ void WATCardOffice::Courier::main() {
 
         printer.print(Printer::Courier, id, (char)CompleteTransfer, work->sid, work->amount);
 
-        if(generator(5) == 0) {
+        if(generator(5) == 0) {                 // check if we lost the card
             delete work->card;
             work->result.exception(new Lost());
         } else {
@@ -118,6 +119,6 @@ void WATCardOffice::Courier::main() {
     }
 
     printer.print(Printer::Courier, id, (char)Finish);
-    _Accept(~Courier) {
+    _Accept(~Courier) {     // Let the courier terminate
     }
 }
