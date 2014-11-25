@@ -8,20 +8,23 @@ _Task WATCardOffice;
 _Task Student {
 public:
     enum State {
-        Starting = 'S',
+        Starting  = 'S',
         Selecting = 'V',
-        Bought = 'B',
-        Lost = 'L',
-        Finished = 'F'
+        Bought    = 'B',
+        Lost      = 'L',
+        Finished  = 'F'
     };
+
     Student(Printer &prt, NameServer &nameServer, WATCardOffice &cardOffice, unsigned int id,
         unsigned int maxPurchases);
 private:
     Printer &printer;
     NameServer &nameServer;
     WATCardOffice &cardOffice;
-    unsigned int id;
-    unsigned int maxPurchases;
+
+    unsigned int id;              // the ID number of this student
+    unsigned int maxPurchases;    // the maximum number of bottles a student may purchase, as defined in ConfigParms
+
     void main();
 };
 
