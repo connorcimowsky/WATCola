@@ -8,6 +8,7 @@ _Monitor Printer;
 _Monitor Bank;
 
 _Task WATCardOffice {
+struct Job;
 public:
     _Event Lost {};                        // lost WATCard
     WATCardOffice(Printer &prt, Bank &bank, unsigned int numCouriers);
