@@ -22,7 +22,7 @@ void Parent::main() {
         } _Else {
             yield(parentalDelay);
 
-            int id = generator(numStudents);
+            int id = generator(numStudents - 1);
             int amount = generator(AMOUNT_LOWER_BOUND, AMOUNT_UPPER_BOUND);
 
             printer.print(Printer::Parent, Deposit, id, amount);
