@@ -8,51 +8,58 @@ class WATCard;
 _Task VendingMachine {
 public:
     enum Flavours {
-        BluesBlackCherry = 0,
+        BluesBlackCherry   = 0,
         ClassicalCreamSoda = 1,
-        RockRootBeer = 2,
-        JazzLime = 3,
-        NumberOfFlavours = 4
+        RockRootBeer       = 2,
+        JazzLime           = 3,
+        NumberOfFlavours   = 4
     };
 
+    _Event Funds {};    // inserted WATCard has insufficient funds
+    _Event Stock {};    // machine is out of stock for the desired flavour
+
+    VendingMachine(Printer &prt, NameServer &nameServer, unsigned int id, unsigned int sodaCost,
+        unsigned int maxStockPerFlavour);
+    void buy(Flavours flavour, WATCard &card);
+    unsigned int* inventory();    // the current stock of each soda flavour
+    void restocked();             // called by the delivery truck when it has finished restocking the machine
+
+    // getters for `sodaCost` and `id`, respectively
+    _Nomutex unsigned int cost();
+    _Nomutex unsigned int getId();
 private:
     enum States {
-        Start = 'S',
+        Start       = 'S',
         ReloadStart = 'r',
-        ReloadEnd = 'R',
-        Buy = 'B',
-        Finished = 'F'
+        ReloadEnd   = 'R',
+        Buy         = 'B',
+        Finished    = 'F'
     };
 
     Printer &printer;
     NameServer &nameServer;
 
-    unsigned int id;
+    unsigned int id;    // the ID of this vending machine
+
+    // constants as defined in ConfigParms
     unsigned int sodaCost;
     unsigned int maxStockPerFlavour;
-    unsigned int stock[NumberOfFlavours];
 
-    bool isRestocking;
+    unsigned int stock[NumberOfFlavours];    // the current stock of each soda flavour
+
+    bool isRestocking;    // used for determining whether we should block users of the vending machine
+
+    // used for determining when we should raise the `Funds` and `Stock` events, respectively
     bool raiseFunds;
     bool raiseStock;
 
+    // used for synchronizing users of the vending machine
     uCondition processing;
 
-    WATCard *currentCard;
-    Flavours currentFlavour;
+    WATCard *currentCard;       // keep a pointer to the WATCard currently being used in the machine
+    Flavours currentFlavour;    // keep track of the flavour currently being dispensed
 
     void main();
-
-  public:
-    _Event Funds {};                       // insufficient funds
-    _Event Stock {};                       // out of stock for particular flavour
-    VendingMachine(Printer &prt, NameServer &nameServer, unsigned int id, unsigned int sodaCost,
-                    unsigned int maxStockPerFlavour);
-    void buy(Flavours flavour, WATCard &card);
-    unsigned int* inventory();
-    void restocked();
-    _Nomutex unsigned int cost();
-    _Nomutex unsigned int getId();
 };
 
 #endif
