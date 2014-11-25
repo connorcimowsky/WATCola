@@ -36,7 +36,7 @@ void uMain::main() {
 
     switch (argc) {
         case 3:
-            if(!convert(seed, argv[2]) || seed <= 0) {
+            if (!convert(seed, argv[2]) || seed <= 0) {
                 usage(argv);
             }
         case 2:

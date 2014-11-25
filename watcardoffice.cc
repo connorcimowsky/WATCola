@@ -49,7 +49,7 @@ WATCardOffice::Job* WATCardOffice::requestWork() {
     if (jobQueue.empty()) {
         // if there is no work to be done, block until a job is created
         workAvailable.wait();
-        if(jobQueue.empty()) {
+        if (jobQueue.empty()) {
             // if we are woken up and no jobs are available, the WATCardOffice is shutting down; return NULL to
             // indicate to the courier that it is time to terminate
             return NULL;
@@ -71,7 +71,7 @@ void WATCardOffice::main() {
 
     while (true) {
         _Accept(~WATCardOffice) {
-            while(!workAvailable.empty()) {
+            while (!workAvailable.empty()) {
                 // force all of the couriers to see that no more work is available
                 workAvailable.signalBlock();
             }

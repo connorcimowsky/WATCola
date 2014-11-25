@@ -67,7 +67,7 @@ void Printer::print(Kind kind, unsigned int lid, char state) {
 
     if (state == 'F') {
         for (unsigned int i = 0; i < totalSize; i++) {
-            if(states[i] != ' ') {
+            if (states[i] != ' ') {
                 flushBuffer(' ');
                 break;
             }
@@ -159,7 +159,7 @@ void Printer::flushBufferIndex(unsigned int index) {
 
     cout << ' ' << firstValues[index];
 
-    if(hasSecondValue(index)) {
+    if (hasSecondValue(index)) {
         cout << ',' << secondValues[index];
     }
 }
@@ -170,7 +170,7 @@ void Printer::throwExcIfNoAdditionalOutput(unsigned int index) {
     }
 
     // all types except for students and vending machines have a blank start
-    if(states[index] == 'S' && (index < Student || index >= startCourierIndex)) {
+    if (states[index] == 'S' && (index < Student || index >= startCourierIndex)) {
         throw "";
     }
 

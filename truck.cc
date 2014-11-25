@@ -21,7 +21,7 @@ void Truck::main() {
     // NameServer will block `getMachineList` until the remaining machines have been registered
     VendingMachine** vendingMachines = nameServer.getMachineList();
 
-    while(true) {
+    while (true) {
         yield(generator(1, 10));
         try {
             // pick up the next shipment from the bottling plant
@@ -34,7 +34,7 @@ void Truck::main() {
         printer.print(Printer::Truck, (char)PickedUp, bottlesLeft());
 
         for (unsigned int i = 0; i < numVendingMachines; i++) {
-            if(cargo[VendingMachine::BluesBlackCherry] == 0
+            if (cargo[VendingMachine::BluesBlackCherry] == 0
             && cargo[VendingMachine::ClassicalCreamSoda] == 0
             && cargo[VendingMachine::RockRootBeer] == 0
             && cargo[VendingMachine::JazzLime] == 0) {
@@ -55,7 +55,7 @@ void Truck::main() {
                 // compute the number of bottles to stock for this flavour
                 unsigned int toStock = maxStockPerFlavour - inventory[j];
 
-                if(cargo[j] < toStock) {
+                if (cargo[j] < toStock) {
                     // if the provided shipment is not sufficient, increment `notReplenished` by the difference
                     notReplenished += toStock - cargo[j];
 
