@@ -6,9 +6,9 @@ NameServer::NameServer(Printer &prt, unsigned int numVendingMachines, unsigned i
     printer(prt),
     numVendingMachines(numVendingMachines),
     numStudents(numStudents),
-    numRegistered(0) {
-    machineList = new VendingMachine*[numVendingMachines];
-    machineAssignment = new unsigned int[numStudents];
+    numRegistered(0),
+    machineList(new VendingMachine*[numVendingMachines]),
+    machineAssignment(new unsigned int[numStudents]) {
 }
 
 NameServer::~NameServer() {
@@ -35,8 +35,8 @@ VendingMachine** NameServer::getMachineList() {
 void NameServer::main() {
     printer.print(Printer::NameServer, Starting);
 
-    outer: while(true) {
-        while(numRegistered < numVendingMachines) {
+    outer: while (true) {
+        while (numRegistered < numVendingMachines) {
             _Accept(~NameServer) {
                 break outer;
             } or _Accept(VMregister) {
@@ -52,8 +52,7 @@ void NameServer::main() {
         while(true) {
             _Accept(~NameServer) {
                 break outer;
-            } or _Accept(getMachine, getMachineList) {
-            }
+            } or _Accept(getMachine, getMachineList);
         }
     }
 

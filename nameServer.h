@@ -5,10 +5,17 @@ _Monitor Printer;
 _Task VendingMachine;
 
 _Task NameServer {
+public:
+    NameServer(Printer &prt, unsigned int numVendingMachines, unsigned int numStudents);
+    ~NameServer();
+    void VMregister(VendingMachine *vendingmachine);
+    VendingMachine *getMachine(unsigned int id);
+    VendingMachine **getMachineList();
+private:
     enum States {
         Starting = 'S',
         Register = 'R',
-        New = 'N',
+        New      = 'N',
         Finished = 'F'
     };
 
@@ -20,12 +27,6 @@ _Task NameServer {
     unsigned int *machineAssignment;
 
     void main();
-  public:
-    NameServer(Printer &prt, unsigned int numVendingMachines, unsigned int numStudents);
-    ~NameServer();
-    void VMregister(VendingMachine *vendingmachine);
-    VendingMachine *getMachine(unsigned int id);
-    VendingMachine **getMachineList();
 };
 
 #endif
