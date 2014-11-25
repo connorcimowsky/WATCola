@@ -6,21 +6,23 @@ using namespace std;
 Printer::Printer(unsigned int numStudents, unsigned int numVendingMachines, unsigned int numCouriers) :
     numStudents(numStudents),
     numVendingMachines(numVendingMachines),
-    numCouriers(numCouriers) {
-    startVendingMachineIndex = (unsigned int)Student + numStudents;
-    startCourierIndex = startVendingMachineIndex + numVendingMachines;
-    totalSize = startCourierIndex + numCouriers;
+    numCouriers(numCouriers),
+    startVendingMachineIndex((unsigned int)Student + numStudents),
+    startCourierIndex(startVendingMachineIndex + numVendingMachines),
+    totalSize(startCourierIndex + numCouriers),
+    states(new char[totalSize]),
+    firstValues(new int[totalSize]),
+    secondValues(new int[totalSize]) {
 
-    states = new char[totalSize];
-    firstValues = new int[totalSize];
-    secondValues = new int[totalSize];
-
+    // initialize states
     for (unsigned int i = 0; i < totalSize; i++) {
         states[i] = ' ';
     }
 
+    // print fixed column headers
     cout << "Parent\tWATOff\tNames\tTruck\tPlant\t";
 
+    // print dynamically-numbered column headers
     outputHeaders(Student, startVendingMachineIndex, "Stud");
     outputHeaders(startVendingMachineIndex, startCourierIndex, "Mach");
     outputHeaders(startCourierIndex, totalSize, "Cour");
@@ -107,46 +109,40 @@ unsigned int Printer::getIndexFromKind(Kind kind, unsigned int lid) {
     switch(kind) {
         case Student:
             index += (unsigned int)Student;
-            // cout << "S" << index << endl;
             return index;
         case Vending:
             index += startVendingMachineIndex;
-            // cout << "V" << lid << "," << index << endl;
             return index;
         case Courier:
             index += startCourierIndex;
-            // cout << "C" << lid << "," << index << endl;
             return index;
         default:
             return index;
     }
 }
 
-/*
- * Sets the state for a task and flushes the buffer if needed.
- */
+// set the state for a task and flush the buffer if needed
 void Printer::flushBufferAndSetState(unsigned int id, char state) {
-    if (states[id] != ' ') {                                // Flush the buffer if we are overwriting a state
+    if (states[id] != ' ') {
+        // flush the buffer if we are overwriting a state
         flushBuffer(state);
     }
 
     states[id] = state;
 }
 
-/*
- * Flushes the buffer of states and values for all tasks. The triggerState determines whether a task finished.
- */
+// flush the buffer of states and values for all tasks; the `triggerState` determines whether a task finished
 void Printer::flushBuffer(char triggerState) {
     for (unsigned int i = 0; i < totalSize; i++) {
-        if (states[i] != ' ') {                                     // Check if there is a state to output
+        if (states[i] != ' ') {              // check if there is a state to output
             flushBufferIndex(i);
-        } else if (triggerState == 'F') {                           // Output dots if a task finished
+        } else if (triggerState == 'F') {    // output dots if a task finished
             cout << "...";
         }
 
         cout << '\t';
 
-        states[i] = ' ';                                            // Reset the state to empty
+        states[i] = ' ';                     // reset the state to empty
     }
 
     cout << endl;
@@ -173,27 +169,27 @@ void Printer::throwExcIfNoAdditionalOutput(unsigned int index) {
         throw "";
     }
 
-    // All types but students and vending machines have a blank start
+    // all types except for students and vending machines have a blank start
     if(states[index] == 'S' && (index < Student || index >= startCourierIndex)) {
         throw "";
     }
 
-    // Watcard request work call complete
+    // watcard request work call is complete
     if (index == WATCardOffice && states[index] == 'W') {
         throw "";
     }
 
-    // Bottling Plant shipment picked up
+    // bottling plant shipment has been picked up
     if (index == BottlingPlant && states[index] == 'P') {
         throw "";
     }
 
-    // Students that lost watcard
+    // students who lost their watcard
     if (index >= Student && index < startVendingMachineIndex && states[index] == 'L') {
         throw "";
     }
 
-    // Vending machine reloading
+    // vending machine is reloading
     if (index >= startVendingMachineIndex &&
         index < startCourierIndex &&
         (states[index] == 'r' || states[index] == 'R')) {
@@ -203,6 +199,7 @@ void Printer::throwExcIfNoAdditionalOutput(unsigned int index) {
 
 bool Printer::hasSecondValue(unsigned int index) {
     char state = states[index];
+
     if (state == 'D' || state == 'T' || state == 'C' || state == 'N' || state == 'd' || state == 'U' || state == 't') {
         return true;
     }
