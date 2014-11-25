@@ -10,57 +10,56 @@ _Monitor Bank;
 _Task WATCardOffice {
 struct Job;
 public:
-    _Event Lost {};                        // lost WATCard
+    _Event Lost {};    // courier lost a student's WATCard
     WATCardOffice(Printer &prt, Bank &bank, unsigned int numCouriers);
-    ~WATCardOffice();
     WATCard::FWATCard create(unsigned int sid, unsigned int amount);
     WATCard::FWATCard transfer(unsigned int sid, unsigned int amount, WATCard *card);
     Job *requestWork();
-
 private:
-    struct Job {                           // marshalled arguments and return future
-        unsigned int sid;
-        unsigned int amount;
-        WATCard *card;
-        WATCard::FWATCard result;          // return future
+    struct Job {
+        unsigned int sid;            // student ID of the associated student
+        unsigned int amount;         // amount to be withdrawn from the student's bank account
+        WATCard *card;               // a pointer to the student's WATCard
+        WATCard::FWATCard result;    // the return value of the job (pointer to the student's WATCard)
         Job(unsigned int sid, unsigned int amount, WATCard *card);
     };
 
     _Task Courier {
     public:
         Courier(Printer &prt, Bank &bank, WATCardOffice &office, unsigned int id);
-
     private:
         enum States {
-            Start = 'S',
-            StartTransfer = 't',
+            Start            = 'S',
+            StartTransfer    = 't',
             CompleteTransfer = 'T',
-            Finish = 'F'
+            Finish           = 'F'
         };
 
         Printer &printer;
         Bank &bank;
         WATCardOffice &office;
-        unsigned int id;
+
+        unsigned int id;    // the ID of this courier
 
         void main();
-    };                 // communicates with bank
+    };
 
     enum States {
-        Start = 'S',
-        Work = 'W',
-        Create = 'C',
+        Start    = 'S',
+        Work     = 'W',
+        Create   = 'C',
         Transfer = 'T',
-        Finish = 'F'
+        Finish   = 'F'
     };
 
     Printer &printer;
     Bank &bank;
-    unsigned int numCouriers;
 
-    Courier **couriers;
-    std::queue<Job*> jobQueue;
-    uCondition workAvailable;
+    unsigned int numCouriers;    // as defined in ConfigParms
+
+    Courier **couriers;          // a list of our couriers
+    std::queue<Job*> jobQueue;   // a queue of jobs to be carried out by our couriers
+    uCondition workAvailable;    // used for synchronizing couriers depending on whether there are jobs to be performed
 
     void main();
 };
