@@ -8,7 +8,7 @@ _Task NameServer;
 
 _Task BottlingPlant {
 public:
-    _Event Shutdown {};
+    _Event Shutdown {};    // shut down the plant
     BottlingPlant(Printer &prt, NameServer &nameServer, unsigned int numVendingMachines,
         unsigned int maxShippedPerFlavour, unsigned int maxStockPerFlavour, unsigned int timeBetweenShipments);
     void getShipment(unsigned int cargo[]);
@@ -22,12 +22,15 @@ private:
 
     Printer &printer;
     NameServer &nameServer;
+
+    // as defined in ConfigParms
     unsigned int numVendingMachines;
     unsigned int maxShippedPerFlavour;
     unsigned int maxStockPerFlavour;
     unsigned int timeBetweenShipments;
-    bool shuttingDown;
-    unsigned int productionRun[VendingMachine::NumberOfFlavours];
+
+    bool shuttingDown;    // required for notifying ourselves to throw a `Shutdown` exception
+    unsigned int productionRun[VendingMachine::NumberOfFlavours];    // the number of bottles produced for each flavour
 
     void main();
 };
