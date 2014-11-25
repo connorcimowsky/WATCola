@@ -18,12 +18,13 @@ void Parent::main() {
 
     while (true) {
         _Accept(~Parent) {
+            // allow the destructor to terminate the task
             break;
         } _Else {
             yield(parentalDelay);
 
-            int id = generator(numStudents - 1);
-            int amount = generator(AMOUNT_LOWER_BOUND, AMOUNT_UPPER_BOUND);
+            int id = generator(numStudents - 1);                               // select a random student
+            int amount = generator(AMOUNT_LOWER_BOUND, AMOUNT_UPPER_BOUND);    // select a random dollar amount
 
             printer.print(Printer::Parent, Deposit, id, amount);
             bank.deposit(id, amount);
