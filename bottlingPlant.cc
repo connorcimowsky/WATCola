@@ -3,22 +3,19 @@
 #include "printer.h"
 #include "truck.h"
 #include "MPRNG.h"
-#include <iostream>
-
-using namespace std;
 
 BottlingPlant::BottlingPlant(Printer &prt, NameServer &nameServer, unsigned int numVendingMachines,
-                 unsigned int maxShippedPerFlavour, unsigned int maxStockPerFlavour, unsigned int timeBetweenShipments) :
-    printer(prt), nameServer(nameServer),
-    numVendingMachines(numVendingMachines),
-    maxShippedPerFlavour(maxShippedPerFlavour),
-    maxStockPerFlavour(maxStockPerFlavour),
-    timeBetweenShipments(timeBetweenShipments),
-    shuttingDown(false) {
+    unsigned int maxShippedPerFlavour, unsigned int maxStockPerFlavour, unsigned int timeBetweenShipments) :
+        printer(prt), nameServer(nameServer),
+        numVendingMachines(numVendingMachines),
+        maxShippedPerFlavour(maxShippedPerFlavour),
+        maxStockPerFlavour(maxStockPerFlavour),
+        timeBetweenShipments(timeBetweenShipments),
+        shuttingDown(false) {
 }
 
 void BottlingPlant::getShipment(unsigned int cargo[]) {
-    if(shuttingDown) {
+    if (shuttingDown) {
         uRendezvousAcceptor();
         _Throw Shutdown();
     }
@@ -34,7 +31,7 @@ void BottlingPlant::main() {
     printer.print(Printer::BottlingPlant, (char)Start);
     Truck truck(printer, nameServer, *this, numVendingMachines, maxStockPerFlavour);
 
-    while(true) {
+    while (true) {
         yield(timeBetweenShipments);
 
         unsigned int totalProduced = 0;
@@ -48,12 +45,10 @@ void BottlingPlant::main() {
         _Accept(~BottlingPlant) {
             shuttingDown = true;
             break;
-        } or _Accept(getShipment) {
-        }
+        } or _Accept(getShipment);
     }
 
     printer.print(Printer::BottlingPlant, (char)Finish);
 
-    _Accept(getShipment) {
-    }
+    _Accept(getShipment);
 }

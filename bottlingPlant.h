@@ -7,11 +7,17 @@ _Monitor Printer;
 _Task NameServer;
 
 _Task BottlingPlant {
+public:
+    _Event Shutdown {};
+    BottlingPlant(Printer &prt, NameServer &nameServer, unsigned int numVendingMachines,
+        unsigned int maxShippedPerFlavour, unsigned int maxStockPerFlavour, unsigned int timeBetweenShipments);
+    void getShipment(unsigned int cargo[]);
+private:
     enum States {
-        Start = 'S',
+        Start      = 'S',
         Generating = 'G',
-        Pickup = 'P',
-        Finish = 'F'
+        Pickup     = 'P',
+        Finish     = 'F'
     };
 
     Printer &printer;
@@ -24,12 +30,6 @@ _Task BottlingPlant {
     unsigned int productionRun[VendingMachine::NumberOfFlavours];
 
     void main();
-public:
-    _Event Shutdown {};                    // shutdown plant
-    BottlingPlant(Printer &prt, NameServer &nameServer, unsigned int numVendingMachines,
-                 unsigned int maxShippedPerFlavour, unsigned int maxStockPerFlavour,
-                 unsigned int timeBetweenShipments);
-    void getShipment(unsigned int cargo[]);
 };
 
 #endif
