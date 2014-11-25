@@ -26,6 +26,9 @@ WATCard::FWATCard WATCardOffice::create(unsigned int sid, unsigned int amount) {
     Job *job = new Job(sid, amount, NULL);
     jobQueue.push(job);
     printer.print(Printer::WATCardOffice, (char)Create, sid, amount);
+
+    workAvailable.signal();
+
     return job->result;
 }
 
@@ -33,6 +36,7 @@ WATCard::FWATCard WATCardOffice::transfer(unsigned int sid, unsigned int amount,
     Job *job = new Job(sid, amount, card);
     jobQueue.push(job);
     printer.print(Printer::WATCardOffice, (char)Transfer, sid, amount);
+    workAvailable.signal();
     return job->result;
 }
 
@@ -65,9 +69,10 @@ void WATCardOffice::main() {
                 delete couriers[i];
             }
 
+            delete[] couriers;
+
             break;                              // Finish
         } or _Accept(create, transfer) {
-            workAvailable.signal();
         } or _Accept(requestWork);
     }
 
