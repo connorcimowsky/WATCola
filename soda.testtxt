@@ -1,0 +1,563 @@
+Specifications
+==============
+
+1.) Rejects invalid configuration file (e.g., ./soda bad.file).
+
+input
+-------------------
+./soda bad.filename
+-------------------
+
+2.) Rejects out-of-range seed (e.g., ).
+
+input
+---------------------
+./soda soda.config -1
+---------------------
+
+3.) System behaves correctly using the following parameters:
+
+soda.config
+--------------------------
+SodaCost                3
+NumStudents             3
+MaxPurchases            16
+NumVendingMachines      3
+MaxStockPerFlavour      5
+MaxShippedPerFlavour    10
+TimeBetweenShipments    13
+ParentalDelay           11
+NumCouriers             3
+--------------------------
+
+input
+------------------------
+./soda soda.config 28371
+------------------------
+
+To be more specific, the following behaviour is expected:
+
+* Vending machine users remain blocked until all machines have been registered
+* Trucks remain blocked until the factory produces a new run
+* When students lose their WATCard, a new one is created
+* Number of bottles produced by bottling plant corresponds to number of bottles picked up by truck
+* Students are assigned vending machines in a round-robin fashion
+* Each student terminates after they have finished drinking soda
+* The shipping truck terminates after the bottling plant terminates
+* The WATCard office does not terminate until all of its couriers terminate
+
+Results
+=======
+
+As seen from the program output below, our solution provides the expected results for all of the above conditions.
+
+Script started on Tue 25 Nov 2014 10:39:37 PM EST
+1%>ubuntu1204-004:~/cs343/a6> make soda
+u++ -g -Wall -Wno-unused-label -MMD -O2 -multi   -c -o bank.o bank.cc
+uC++ Version 6.0.0 (multiple processor) (debug) (no yield) (no verify) (no profile)
+u++ -g -Wall -Wno-unused-label -MMD -O2 -multi   -c -o bottlingPlant.o bottlingPlant.cc
+uC++ Version 6.0.0 (multiple processor) (debug) (no yield) (no verify) (no profile)
+u++ -g -Wall -Wno-unused-label -MMD -O2 -multi   -c -o config.o config.cc
+uC++ Version 6.0.0 (multiple processor) (debug) (no yield) (no verify) (no profile)
+u++ -g -Wall -Wno-unused-label -MMD -O2 -multi   -c -o nameServer.o nameServer.cc
+uC++ Version 6.0.0 (multiple processor) (debug) (no yield) (no verify) (no profile)
+u++ -g -Wall -Wno-unused-label -MMD -O2 -multi   -c -o parent.o parent.cc
+uC++ Version 6.0.0 (multiple processor) (debug) (no yield) (no verify) (no profile)
+u++ -g -Wall -Wno-unused-label -MMD -O2 -multi   -c -o printer.o printer.cc
+uC++ Version 6.0.0 (multiple processor) (debug) (no yield) (no verify) (no profile)
+u++ -g -Wall -Wno-unused-label -MMD -O2 -multi   -c -o student.o student.cc
+uC++ Version 6.0.0 (multiple processor) (debug) (no yield) (no verify) (no profile)
+u++ -g -Wall -Wno-unused-label -MMD -O2 -multi   -c -o truck.o truck.cc
+uC++ Version 6.0.0 (multiple processor) (debug) (no yield) (no verify) (no profile)
+u++ -g -Wall -Wno-unused-label -MMD -O2 -multi   -c -o vendingMachine.o vendingMachine.cc
+uC++ Version 6.0.0 (multiple processor) (debug) (no yield) (no verify) (no profile)
+u++ -g -Wall -Wno-unused-label -MMD -O2 -multi   -c -o watcard.o watcard.cc
+uC++ Version 6.0.0 (multiple processor) (debug) (no yield) (no verify) (no profile)
+u++ -g -Wall -Wno-unused-label -MMD -O2 -multi   -c -o watcardoffice.o watcardoffice.cc
+uC++ Version 6.0.0 (multiple processor) (debug) (no yield) (no verify) (no profile)
+u++ -g -Wall -Wno-unused-label -MMD -O2 -multi   -c -o main.o main.cc
+uC++ Version 6.0.0 (multiple processor) (debug) (no yield) (no verify) (no profile)
+u++ -g -Wall -Wno-unused-label -MMD -O2 -multi bank.o bottlingPlant.o config.o nameServer.o parent.o printer.o
+student.o truck.o vendingMachine.o watcard.o watcardoffice.o main.o -o soda
+uC++ Version 6.0.0 (multiple processor) (debug) (no yield) (no verify) (no profile)
+1%>ubuntu1204-004:~/cs343/a6> ./soda soda.config 28371
+Parent	WATOff	Names	Truck	Plant	Stud0	Stud1	Stud2	Mach0	Mach1	Mach2	Cour0	Cour1	Cour2	
+*******	*******	*******	*******	*******	*******	*******	*******	*******	*******	*******	*******	*******	*******	
+S	S	S						S 3			S	S	S	
+		R 0	S	S	S 0,4	S 3,4	S 0,16		S 3	S 3				
+	C 0,5	R 1												
+	W	R 2									t 0,5			
+	C 1,5	N 0,0			V 0									
+	C 2,5	N 1,1				V 1								
+D 2,2	W	N 2,2					V 2					t 1,5		
+	W			G 26									t 2,5	
+			P 26	P										
+			d 0,26					r						
+			U 0,4											
+D 0,1			D 0,10					R						
+			d 1,10						r					
+			U 1,10											
+D 0,3			D 1,0	G 14					R					
+			P 14	P										
+			d 2,14							r				
+			U 2,8											
+			D 2,2							R				
+			d 0,2					r						
+			U 0,3											
+			D 0,1					R						
+			d 1,1						r					
+			U 1,10											
+D 1,3			D 1,1	G 18					R					
+			P 18	P										
+			d 2,18							r				
+			U 2,5											
+			D 2,15							R				
+			d 0,15					r						
+			U 0,3											
+			D 0,15					R						
+			d 1,15						r					
+			U 1,5											
+D 1,1			D 1,10	G 29					R					
+			P 29	P										
+			d 2,29							r				
+			U 2,0											
+D 0,3			D 2,24							R	T 0,5			
+			d 0,24					r						
+			U 0,0											
+			D 0,21					R						
+			d 1,21						r					
+			U 1,4											
+D 2,2			D 1,20	G 16	B 5			B 0,4	R					
+			P 16	P										
+			d 2,16							r				
+			U 2,0											
+			D 2,16							R				
+	T 0,8		d 0,16											
+	W		U 0,0					r			t 0,8			
+			D 0,15					R						
+			d 1,15						r					
+			U 1,0											
+D 1,3			D 1,11	G 18		B 5			R			T 1,5		
+			P 18	P					B 3,4					
+			d 2,18							r				
+			U 2,0											
+	T 1,8		D 2,18							R				
+			d 0,18					r						
+			U 0,0											
+D 0,1	W		D 0,18					R				t 1,8		
+			d 1,18						r					
+			U 1,0											
+D 1,1			D 1,17	G 20					R					
+			P 20	P										
+			d 2,20							r				
+			U 2,0											
+			D 2,20							R				
+			d 0,20					r						
+			U 0,0											
+			D 0,20					R						
+			d 1,20						r					
+			U 1,0											
+D 1,3			D 1,20	G 29					R					
+			P 29	P										
+			d 2,29							r				
+			U 2,0											
+			D 2,29							R				
+			d 0,29					r						
+			U 0,0											
+			D 0,29					R						
+			d 1,29						r					
+			U 1,0											
+D 2,2	T 2,8		D 1,29	G 21			B 5		R	B 0,4			T 2,5	
+	W		P 21	P									t 2,8	
+			d 2,21							r				
+			U 2,0											
+			D 2,20							R				
+			d 0,20					r						
+			U 0,0											
+D 0,2			D 0,20					R						
+			d 1,20						r					
+			U 1,0											
+D 1,3			D 1,20	G 15					R			T 1,8		
+			P 15	P										
+			d 2,15							r				
+			U 2,0											
+			D 2,15							R				
+			d 0,15					r						
+			U 0,0											
+			D 0,15					R						
+			d 1,15						r					
+			U 1,0											
+D 2,2			D 1,15			B 10			R					
+				G 22					B 3,4					
+			P 22	P										
+			d 2,22							r				
+			U 2,0											
+			D 2,22			B 7				R				
+			d 0,22					r						
+			U 0,0											
+			D 0,22					R	B 3,3					
+			d 1,22						r					
+			U 1,0											
+D 0,2			D 1,20			B 4			R					
+...	...	...	...	...	...	F	...	...	...	...	...	...	...	
+				G 25					B 3,4					
+			P 25	P										
+			d 2,25							r				
+			U 2,0											
+D 2,1			D 2,25							R				
+			d 0,25					r						
+			U 0,0											
+			D 0,25					R						
+			d 1,25						r					
+			U 1,0											
+D 2,1			D 1,24	G 24					R					
+			P 24	P										
+			d 2,24							r				
+			U 2,0											
+			D 2,24							R				
+			d 0,24					r						
+			U 0,0											
+			D 0,24					R						
+			d 1,24						r					
+			U 1,0											
+D 2,2			D 1,24	G 14					R					
+			P 14	P										
+			d 2,14							r				
+			U 2,0											
+			D 2,14							R				
+			d 0,14					r						
+			U 0,0											
+D 0,1			D 0,14					R			T 0,8			
+			d 1,14						r					
+			U 1,0											
+D 2,1			D 1,14	G 23	B 10			B 0,4	R				T 2,8	
+			P 23	P										
+			d 2,23							r				
+			U 2,0											
+			D 2,23							R				
+			d 0,23					r						
+			U 0,0											
+			D 0,22					R						
+			d 1,22						r					
+			U 1,0											
+D 0,1			D 1,22		B 7		B 10	B 0,4	R	B 0,4				
+				G 26			B 7			B 0,3				
+			P 26	P										
+			d 2,26							r				
+			U 2,0											
+			D 2,24							R				
+			d 0,24		B 4									
+...	...	...	...	...	F	...	...	...	...	...	...	...	...	
+D 0,3								B 0,3						
+			U 0,0					r						
+			D 0,22					R						
+			d 1,22						r					
+			U 1,0											
+	T 2,8		D 1,22				B 4		R	B 0,4				
+	W			G 14								t 2,8		
+			P 14	P										
+			d 2,14							r				
+			U 2,0											
+D 2,3			D 2,13							R				
+			d 0,13					r						
+			U 0,0											
+			D 0,13					R						
+			d 1,13						r					
+			U 1,0											
+D 2,1			D 1,13	G 38					R					
+			P 38	P										
+			d 2,38							r				
+			U 2,0											
+			D 2,38							R				
+			d 0,38					r						
+			U 0,0											
+			D 0,38					R						
+			d 1,38						r					
+			U 1,0											
+D 2,3			D 1,38	G 26					R					
+			P 26	P										
+			d 2,26							r				
+			U 2,0											
+			D 2,26							R				
+			d 0,26					r						
+			U 0,0											
+D 2,1			D 0,26					R				T 2,8		
+			d 1,26						r					
+			U 1,0											
+D 0,3			D 1,26	G 14			B 9		R	B 0,4				
+			P 14	P										
+			d 2,14				B 6			B 0,3				
+			U 2,0							r				
+			D 2,12							R				
+			d 0,12					r						
+			U 0,0											
+			D 0,12					R						
+			d 1,12						r					
+			U 1,0											
+D 0,2			D 1,12	G 19			B 3		R	B 0,4				
+			P 19	P										
+			d 2,19							r				
+			U 2,0											
+			D 2,18							R				
+			d 0,18					r						
+			U 0,0											
+			D 0,18					R						
+			d 1,18						r					
+			U 1,0											
+D 1,1	T 2,8		D 1,18						R					
+	W			G 22							t 2,8			
+			P 22	P										
+			d 2,22							r				
+			U 2,0											
+D 0,1			D 2,22							R				
+			d 0,22					r						
+			U 0,0											
+			D 0,22					R						
+			d 1,22						r					
+			U 1,0											
+D 0,3			D 1,22	G 16					R					
+			P 16	P										
+			d 2,16							r				
+			U 2,0											
+			D 2,16							R				
+			d 0,16					r						
+			U 0,0											
+			D 0,16					R						
+			d 1,16						r					
+			U 1,0											
+D 0,2			D 1,16	G 23					R					
+			P 23	P										
+			d 2,23							r				
+			U 2,0											
+D 1,2			D 2,23							R				
+			d 0,23					r						
+			U 0,0											
+			D 0,23					R						
+			d 1,23						r					
+			U 1,0											
+D 0,3			D 1,23	G 23					R					
+			P 23	P										
+			d 2,23							r				
+			U 2,0											
+			D 2,23							R				
+			d 0,23					r						
+			U 0,0											
+			D 0,23					R						
+			d 1,23						r					
+			U 1,0											
+D 2,3			D 1,23	G 5					R					
+			P 5	P										
+			d 2,5							r				
+			U 2,0											
+			D 2,5							R				
+			d 0,5					r						
+			U 0,0											
+			D 0,5					R						
+			d 1,5						r					
+			U 1,0											
+D 0,1			D 1,5	G 11					R					
+			P 11	P										
+			d 2,11							r				
+			U 2,0											
+D 1,3			D 2,11							R				
+			d 0,11					r						
+			U 0,0											
+			D 0,11					R						
+			d 1,11						r					
+			U 1,0											
+D 2,3			D 1,11	G 34					R					
+			P 34	P										
+			d 2,34							r				
+			U 2,0											
+			D 2,34							R				
+			d 0,34					r						
+			U 0,0											
+			D 0,34					R						
+			d 1,34						r					
+			U 1,0											
+D 2,2			D 1,34	G 23			B 8		R		T 2,8			
+			P 23	P										
+			d 2,23							B 0,4				
+			U 2,0							r				
+			D 2,22							R				
+			d 0,22					r						
+			U 0,0											
+D 1,2			D 0,22					R						
+			d 1,22						r					
+			U 1,0											
+D 1,2			D 1,22	G 12			B 5		R	B 0,4				
+			P 12	P										
+			d 2,12							r				
+			U 2,0											
+			D 2,11							R				
+			d 0,11					r						
+			U 0,0											
+			D 0,11					R						
+			d 1,11						r					
+			U 1,0											
+	T 2,8		D 1,11						R					
+D 2,2	W			G 28									t 2,8	
+			P 28	P										
+			d 2,28							r				
+			U 2,0											
+			D 2,28							R				
+			d 0,28					r						
+			U 0,0											
+			D 0,28					R						
+			d 1,28						r					
+			U 1,0											
+D 0,3			D 1,28	G 17					R					
+			P 17	P										
+			d 2,17							r				
+			U 2,0											
+D 1,3			D 2,17							R				
+			d 0,17					r						
+			U 0,0											
+			D 0,17					R						
+			d 1,17						r					
+			U 1,0											
+D 0,2			D 1,17	G 14					R					
+			P 14	P										
+			d 2,14							r				
+			U 2,0											
+			D 2,14							R				
+			d 0,14					r						
+			U 0,0											
+			D 0,14					R						
+			d 1,14						r					
+			U 1,0											
+D 0,3			D 1,14	G 20					R					
+			P 20	P										
+			d 2,20							r				
+			U 2,0											
+			D 2,20							R				
+			d 0,20					r						
+			U 0,0											
+			D 0,20					R						
+			d 1,20						r					
+			U 1,0											
+D 2,2			D 1,20	G 15					R					
+			P 15	P										
+			d 2,15							r				
+			U 2,0											
+D 2,3			D 2,15							R				
+			d 0,15					r						
+			U 0,0											
+			D 0,15					R						
+			d 1,15						r					
+			U 1,0											
+D 0,2			D 1,15	G 16					R					
+			P 16	P										
+			d 2,16							r				
+			U 2,0											
+			D 2,16							R				
+			d 0,16					r						
+			U 0,0											
+			D 0,16					R						
+			d 1,16						r					
+			U 1,0											
+D 2,2			D 1,16	G 7					R				T 2,8	
+			P 7	P										
+			d 2,7							r				
+			U 2,0											
+			D 2,7							R				
+			d 0,7					r						
+			U 0,0											
+D 2,3			D 0,7					R						
+			d 1,7						r					
+			U 1,0											
+			D 1,7				B 10		R	B 0,4				
+D 2,2				G 17			B 7			B 0,3				
+			P 17	P										
+			d 2,17							r				
+			U 2,0											
+			D 2,15							R				
+			d 0,15					r						
+			U 0,0											
+			D 0,15					R						
+			d 1,15						r					
+			U 1,0											
+D 1,3	T 2,8		D 1,15	G 28			B 4		R	B 0,4				
+			P 28	P										
+	W		d 2,28							r		t 2,8		
+			U 2,0											
+			D 2,27							R				
+			d 0,27					r						
+			U 0,0											
+			D 0,27					R						
+			d 1,27						r					
+			U 1,0											
+D 2,2			D 1,27	G 22					R			T 2,8		
+			P 22	P										
+			d 2,22							r				
+			U 2,0											
+D 2,2			D 2,22							R				
+			d 0,22					r						
+			U 0,0											
+			D 0,22					R						
+			d 1,22						r					
+			U 1,0											
+D 1,3			D 1,22	G 19			B 9		R	B 0,4				
+			P 19	P			B 6							
+			d 2,19							B 0,3				
+			U 2,0							r				
+			D 2,17							R				
+			d 0,17					r						
+			U 0,0											
+			D 0,17					R						
+			d 1,17						r					
+			U 1,0											
+D 2,3	T 2,8		D 1,17				B 3		R	B 0,4				
+	W			G 16							t 2,8			
+			P 16	P										
+			d 2,16							r				
+			U 2,0											
+			D 2,15							R				
+			d 0,15					r						
+			U 0,0											
+			D 0,15					R						
+			d 1,15						r					
+			U 1,0											
+D 2,2			D 1,15	G 14					R					
+			P 14	P										
+			d 2,14							r				
+			U 2,0											
+D 0,2			D 2,14							R				
+			d 0,14					r						
+			U 0,0											
+			D 0,14					R						
+			d 1,14						r					
+			U 1,0											
+D 2,2			D 1,14	G 21					R		T 2,8			
+			P 21	P										
+			d 2,21				B 8							
+...	...	...	...	...	...	...	F	...	...	...	...	...	...	
+										B 0,4				
+			U 2,0							r				
+			D 2,20							R				
+			d 0,20					r						
+			U 0,0											
+D 0,2			D 0,20					R						
+			d 1,20						r					
+			U 1,0											
+			D 1,20	G 28					R					
+...	...	...	...	F	...	...	...	...	...	...	...	...	...	
+D 2,2														
+...	...	...	F	...	...	...	...	...	...	...	...	...	...	
+...	...	...	...	...	...	...	...	F	...	...	...	...	...	
+...	...	...	...	...	...	...	...	...	F	...	...	...	...	
+...	...	...	...	...	...	...	...	...	...	F	...	...	...	
+...	...	F	...	...	...	...	...	...	...	...	...	...	...	
+D 0,1														
+...	...	...	...	...	...	...	...	...	...	...	...	...	F	
+...	...	...	...	...	...	...	...	...	...	...	...	F	...	
+...	...	...	...	...	...	...	...	...	...	...	F	...	...	
+D 1,2														
+...	F	...	...	...	...	...	...	...	...	...	...	...	...	
+D 0,2														
+F	...	...	...	...	...	...	...	...	...	...	...	...	...	
+***********************
+1%>ubuntu1204-004:~/cs343/a6> exit
+exit
+
+Script done on Tue 25 Nov 2014 10:40:02 PM EST
