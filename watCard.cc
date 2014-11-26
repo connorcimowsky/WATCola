@@ -1,4 +1,4 @@
-#include "watcard.h"
+#include "watCard.h"
 
 WATCard::WATCard() : balance(0) {}
 

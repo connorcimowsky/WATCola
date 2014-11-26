@@ -2,7 +2,7 @@
 #define WATCARDOFFICE_H
 
 #include <queue>
-#include "watcard.h"
+#include "watCard.h"
 
 _Monitor Printer;
 _Monitor Bank;

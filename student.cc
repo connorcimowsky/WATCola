@@ -1,8 +1,8 @@
 #include "student.h"
 #include "printer.h"
 #include "nameServer.h"
-#include "watcard.h"
-#include "watcardoffice.h"
+#include "watCard.h"
+#include "watCardOffice.h"
 #include "vendingMachine.h"
 #include "MPRNG.h"
 

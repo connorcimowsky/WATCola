@@ -71,14 +71,14 @@ u++ -g -Wall -Wno-unused-label -MMD -O2 -multi   -c -o truck.o truck.cc
 uC++ Version 6.0.0 (multiple processor) (debug) (no yield) (no verify) (no profile)
 u++ -g -Wall -Wno-unused-label -MMD -O2 -multi   -c -o vendingMachine.o vendingMachine.cc
 uC++ Version 6.0.0 (multiple processor) (debug) (no yield) (no verify) (no profile)
-u++ -g -Wall -Wno-unused-label -MMD -O2 -multi   -c -o watcard.o watcard.cc
+u++ -g -Wall -Wno-unused-label -MMD -O2 -multi   -c -o watCard.o watCard.cc
 uC++ Version 6.0.0 (multiple processor) (debug) (no yield) (no verify) (no profile)
-u++ -g -Wall -Wno-unused-label -MMD -O2 -multi   -c -o watcardoffice.o watcardoffice.cc
+u++ -g -Wall -Wno-unused-label -MMD -O2 -multi   -c -o watCardOffice.o watCardOffice.cc
 uC++ Version 6.0.0 (multiple processor) (debug) (no yield) (no verify) (no profile)
 u++ -g -Wall -Wno-unused-label -MMD -O2 -multi   -c -o main.o main.cc
 uC++ Version 6.0.0 (multiple processor) (debug) (no yield) (no verify) (no profile)
 u++ -g -Wall -Wno-unused-label -MMD -O2 -multi bank.o bottlingPlant.o config.o nameServer.o parent.o printer.o
-student.o truck.o vendingMachine.o watcard.o watcardoffice.o main.o -o soda
+student.o truck.o vendingMachine.o watCard.o watCardOffice.o main.o -o soda
 uC++ Version 6.0.0 (multiple processor) (debug) (no yield) (no verify) (no profile)
 1%>ubuntu1204-004:~/cs343/a6> ./soda soda.config 28371
 Parent	WATOff	Names	Truck	Plant	Stud0	Stud1	Stud2	Mach0	Mach1	Mach2	Cour0	Cour1	Cour2	

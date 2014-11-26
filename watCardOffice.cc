@@ -1,7 +1,7 @@
-#include "watcardoffice.h"
+#include "watCardOffice.h"
 #include "bank.h"
 #include "printer.h"
-#include "watcard.h"
+#include "watCard.h"
 #include "MPRNG.h"
 #include <iostream>
 

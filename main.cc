@@ -2,7 +2,7 @@
 #include "printer.h"
 #include "bank.h"
 #include "parent.h"
-#include "watcardoffice.h"
+#include "watCardOffice.h"
 #include "nameServer.h"
 #include "vendingMachine.h"
 #include "bottlingPlant.h"
